@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"gamified education fintech lesson mobile app duolingo\" --design-system -p \"Trading Academy\" -f markdown)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"gamified education fintech lesson mobile app duolingo\" --design-system -p \"Trading Academy\" -f markdown)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"animation quiz gamified mobile step wizard\" --domain ux)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"line chart trend financial time series\" --domain chart)",
+      "Bash(npm --version)",
+      "Bash(npx --version)",
+      "Bash(npm info:*)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('exports:', list\\(d.get\\('exports',{}\\).keys\\(\\)\\)[:10]\\); print\\('main:', d.get\\('main'\\)\\); print\\('module:', d.get\\('module'\\)\\)\")",
+      "Bash(node -e \"const d=JSON.parse\\(require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\)\\); console.log\\('peerDeps:', JSON.stringify\\(d.peerDependencies\\)\\); console.log\\('main:', d.main\\); console.log\\('types:', d.types\\);\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"dynamic import ssr client component\" --stack nextjs)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=no --import-alias=\"@/*\" --yes)"
+    ]
+  }
+}
