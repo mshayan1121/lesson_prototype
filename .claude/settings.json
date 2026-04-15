@@ -43,7 +43,12 @@
       "mcp__playwright__browser_console_messages",
       "mcp__playwright__browser_wait_for",
       "Bash(python skills/ui-ux-pro-max/scripts/search.py \"gamified education dashboard youth fintech trading academy\" --design-system -p \"Trading Academy Dashboard\")",
-      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"gamified education dashboard youth fintech trading academy\" --design-system -p \"Trading Academy Dashboard\")"
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"gamified education dashboard youth fintech trading academy\" --design-system -p \"Trading Academy Dashboard\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"gamified education youth dashboard sidebar navigation\" --design-system -p \"Trading Academy Dashboard\" -f markdown)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"animation accessibility stagger\" --domain ux)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"nextjs dashboard routing layout\" --stack nextjs)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/dashboard)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

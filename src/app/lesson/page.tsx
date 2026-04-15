@@ -16,6 +16,7 @@ import {
   XCircle,
   DollarSign,
   Check,
+  ChevronLeft,
 } from "lucide-react";
 import { LessonsDropdown } from "@/components/LessonsDropdown";
 
@@ -206,9 +207,13 @@ function TopBar({ step }: { step: Step }) {
   return (
     <header className="shrink-0 bg-white border-b border-gray-100">
       <div className="px-4 md:px-8 py-4 flex items-center justify-between md:grid md:grid-cols-3">
-        <span className="font-heading text-sm font-bold text-brand-dark tracking-tight">
-          Trading Academy
-        </span>
+        <Link
+          href="/dashboard/modules"
+          className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors duration-150"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span className="hidden sm:inline">Dashboard</span>
+        </Link>
         <div className="hidden md:flex justify-center">
           <StepPillBar step={step} />
         </div>
@@ -368,7 +373,7 @@ function Step2({
         {blocks.map((b) => (
           <div
             key={b.title}
-            className="bg-white border-l-4 border-brand-mid rounded-r-2xl shadow-sm p-4"
+            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4"
           >
             <div className="flex items-center gap-2 mb-1.5">
               <div className="w-6 h-6 rounded-full bg-brand-light flex items-center justify-center shrink-0">

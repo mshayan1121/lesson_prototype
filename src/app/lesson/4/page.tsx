@@ -8,8 +8,11 @@ import {
   TrendingUp,
   Check,
   CheckCircle2,
+  PartyPopper,
+  ChevronLeft,
 } from "lucide-react";
 import { LessonsDropdown } from "@/components/LessonsDropdown";
+import Link from "next/link";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Step = 1 | 2 | 3;
@@ -169,9 +172,13 @@ function TopBar({ step }: { step: Step }) {
   return (
     <header className="shrink-0 bg-white border-b border-gray-100">
       <div className="px-4 md:px-8 py-4 flex items-center justify-between md:grid md:grid-cols-3">
-        <span className="font-heading text-sm font-bold text-brand-dark tracking-tight">
-          Trading Academy
-        </span>
+        <Link
+          href="/dashboard/modules"
+          className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors duration-150"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span className="hidden sm:inline">Dashboard</span>
+        </Link>
         <div className="hidden md:flex justify-center">
           <StepPillBar step={step} />
         </div>
@@ -545,7 +552,7 @@ function Step2({
                     isProfit ? "text-green-800" : "text-amber-700"
                   }`}
                 >
-                  {isProfit ? "You made a profit! 🎉" : "You made a loss. Here's what to learn."}
+                  {isProfit ? <span className="flex items-center gap-2">You made a profit! <PartyPopper size={22} className="inline-block" /></span> : "You made a loss. Here's what to learn."}
                 </h3>
 
                 <p className="font-sans text-sm text-gray-700">
@@ -823,15 +830,12 @@ function Step3({
         transition={{ delay: 1 }}
         className="w-full flex flex-col gap-3"
       >
-        <button
-          disabled
-          className="font-sans w-full rounded-full bg-gray-100 text-gray-400 px-6 py-3.5 font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2"
+        <Link
+          href="/dashboard"
+          className="font-sans w-full rounded-full bg-[#3B6D11] text-white px-6 py-3.5 font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2d5409] active:scale-[0.98] transition-all duration-200"
         >
-          Start next module →
-          <span className="font-sans text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full">
-            Coming soon
-          </span>
-        </button>
+          Back to Dashboard →
+        </Link>
         <button
           onClick={onRestart}
           className="font-sans rounded-full bg-transparent border border-gray-200 text-gray-500
