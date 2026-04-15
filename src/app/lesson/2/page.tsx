@@ -104,6 +104,8 @@ const SUMMARY_POINTS = [
 
 const STOCK_PRICE = 213.5;
 
+const LESSON_LABEL = "Lesson 2 — Buying Stocks";
+
 // ─── Shared primitives ────────────────────────────────────────────────────────
 
 function Label({ children }: { children: React.ReactNode }) {
@@ -646,7 +648,7 @@ function QuestionBlock({
 
   return (
     <div className="space-y-3">
-      <p className="font-heading text-base font-bold text-gray-800">{q.question}</p>
+      <p className="font-heading text-base font-bold text-gray-800 whitespace-nowrap">{q.question}</p>
       <div className="space-y-2">
         {q.options.map((opt, i) => (
           <button
@@ -924,7 +926,14 @@ export default function Lesson2Page() {
     <div className="flex flex-col bg-gray-50 min-h-screen md:h-screen">
       <TopBar step={step} />
 
-      <main className="flex-1 flex items-start md:items-center justify-center px-4 md:px-8 py-8 md:py-12 overflow-y-auto">
+      {/* Persistent lesson indicator */}
+      <div className="shrink-0 px-4 md:px-8 pt-5">
+        <p className="font-sans text-xs font-semibold uppercase tracking-wide text-[#639922]">
+          {LESSON_LABEL}
+        </p>
+      </div>
+
+      <main className="flex-1 flex items-start md:items-center justify-center px-4 md:px-8 py-5 md:py-8 overflow-y-auto">
         <div key={step} className="animate-fade-up w-full flex justify-center">
           {step === 1 && (
             <Step1

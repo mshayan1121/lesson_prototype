@@ -39,7 +39,11 @@
       "mcp__playwright__browser_evaluate",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "mcp__playwright__browser_console_messages",
+      "mcp__playwright__browser_wait_for",
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"gamified education dashboard youth fintech trading academy\" --design-system -p \"Trading Academy Dashboard\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"gamified education dashboard youth fintech trading academy\" --design-system -p \"Trading Academy Dashboard\")"
     ]
   }
 }

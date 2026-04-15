@@ -53,6 +53,8 @@ const MONTHS = [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
+const LESSON_LABEL = "Lesson 4 — The Simulation";
+
 // ─── Lazy chart ───────────────────────────────────────────────────────────────
 const SimChart = dynamic(() => import("./_SimChart"), { ssr: false });
 
@@ -865,7 +867,14 @@ export default function Lesson4Page() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <TopBar step={step} />
 
-      <main className="flex-1 flex justify-center px-4 md:px-8 py-10 md:py-14">
+      {/* Persistent lesson indicator */}
+      <div className="shrink-0 px-4 md:px-8 pt-5">
+        <p className="font-sans text-xs font-semibold uppercase tracking-wide text-[#639922]">
+          {LESSON_LABEL}
+        </p>
+      </div>
+
+      <main className="flex-1 flex justify-center px-4 md:px-8 py-7 md:py-10">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
