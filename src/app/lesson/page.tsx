@@ -166,7 +166,7 @@ function StepPillBar({ step }: { step: Step }) {
                     isCompleted || isActive ? "rgba(0,0,0,0)" : "#D1D5DB",
                 }}
                 transition={{ duration: 0.35, ease: "easeInOut" }}
-                className="w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0"
+                className="w-6 h-6 md:w-8 md:h-8 rounded-full border-2 flex items-center justify-center shrink-0"
               >
                 {isCompleted ? (
                   <Check className="w-4 h-4 text-white" />
@@ -183,14 +183,14 @@ function StepPillBar({ step }: { step: Step }) {
               <motion.span
                 animate={{ color: isActive ? "#639922" : "#9CA3AF" }}
                 transition={{ duration: 0.35 }}
-                className={`font-sans text-xs ${isActive ? "font-bold" : "font-medium"}`}
+                className={`font-sans text-xs ${isActive ? "font-bold" : "font-medium"} ${isActive ? "" : "invisible md:visible"}`}
               >
                 {STEP_LABELS[i]}
               </motion.span>
             </div>
 
             {/* Connector line */}
-            {i < 4 && <div className="w-10 h-px bg-gray-200 mx-1 mb-5" />}
+            {i < 4 && <div className="w-4 md:w-10 h-px bg-gray-200 mx-0.5 md:mx-1 mb-4 md:mb-5" />}
           </div>
         );
       })}
@@ -202,15 +202,21 @@ function StepPillBar({ step }: { step: Step }) {
 
 function TopBar({ step }: { step: Step }) {
   return (
-    <header className="shrink-0 bg-white border-b border-gray-100 px-8 py-4 grid grid-cols-3 items-center">
-      <span className="font-heading text-sm font-bold text-brand-dark tracking-tight">
-        Trading Academy
-      </span>
-      <div className="flex justify-center">
-        <StepPillBar step={step} />
+    <header className="shrink-0 bg-white border-b border-gray-100">
+      <div className="px-4 md:px-8 py-4 flex items-center justify-between md:grid md:grid-cols-3">
+        <span className="font-heading text-sm font-bold text-brand-dark tracking-tight">
+          Trading Academy
+        </span>
+        <div className="hidden md:flex justify-center">
+          <StepPillBar step={step} />
+        </div>
+        <div className="flex justify-end">
+          <LessonsDropdown />
+        </div>
       </div>
-      <div className="flex justify-end">
-        <LessonsDropdown />
+      {/* Progress bar row — mobile only */}
+      <div className="md:hidden px-4 pb-3 flex justify-center">
+        <StepPillBar step={step} />
       </div>
     </header>
   );
@@ -251,12 +257,12 @@ function Step1({
     ];
 
   return (
-    <div className="grid grid-cols-2 gap-12 items-center w-full max-w-5xl">
+    <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-start md:items-center w-full max-w-5xl">
       {/* Left */}
       <div className="space-y-5">
         <div>
           <Label>Lesson 1 — Stocks</Label>
-          <h1 className="font-heading text-4xl font-bold text-gray-900 leading-tight mt-1">
+          <h1 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 leading-tight mt-1">
             How does Apple make $383 billion a year?
           </h1>
           <p className="font-sans text-base text-gray-500 mt-2 leading-relaxed">
@@ -344,19 +350,19 @@ function Step2({
     ];
 
   return (
-    <div className="grid grid-cols-5 gap-12 items-start w-full max-w-5xl">
+    <div className="flex flex-col md:grid md:grid-cols-5 gap-8 md:gap-12 items-start w-full max-w-5xl">
       {/* Left — heading, intro, button */}
-      <div className="col-span-2 space-y-5 pt-1">
+      <div className="md:col-span-2 space-y-5 pt-1">
         <div>
           <Label>The concept</Label>
-          <h2 className="font-heading text-4xl font-bold text-gray-900 mt-1">What is a stock?</h2>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 mt-1">What is a stock?</h2>
           <p className="font-sans text-lg text-gray-600 mt-2 leading-relaxed">{content.intro}</p>
         </div>
         <PrimaryButton onClick={onNext}>Got it — show me the chart →</PrimaryButton>
       </div>
 
       {/* Right — concept blocks */}
-      <div className="col-span-3 space-y-3">
+      <div className="md:col-span-3 space-y-3">
         {blocks.map((b) => (
           <div
             key={b.title}
@@ -385,12 +391,12 @@ function Step3({
   onNext: () => void;
 }) {
   return (
-    <div className="grid grid-cols-2 gap-12 items-center w-full max-w-5xl">
+    <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-start md:items-center w-full max-w-5xl">
       {/* Left */}
       <div className="space-y-5">
         <div>
           <Label>See it in action</Label>
-          <h2 className="font-heading text-4xl font-bold text-gray-900 mt-1">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 mt-1">
             Apple&rsquo;s stock price over time
           </h2>
           <p className="font-sans text-base text-gray-500 mt-2 leading-relaxed">
@@ -467,8 +473,8 @@ function QuestionBlock({
             key={i}
             onClick={() => answered === null && onAnswer(questionIndex, i)}
             disabled={answered !== null}
-            className={`font-sans w-full text-left rounded-xl border py-4 px-6 text-sm font-medium
-                        transition-colors duration-200 leading-snug
+            className={`font-sans w-full text-left rounded-xl border py-5 md:py-4 px-4 md:px-6 text-sm font-medium
+                        min-h-[44px] transition-colors duration-200 leading-snug
                         ${getOptionStyle(answers, questionIndex, i)}`}
           >
             {opt}
@@ -506,12 +512,12 @@ function Step4({
   const bothAnswered = q1Answered && answers[1] !== null;
 
   return (
-    <div className="w-full max-w-5xl flex gap-12 items-start">
+    <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-12 items-start">
       {/* Left — title + button */}
-      <div className="w-56 shrink-0 space-y-5 pt-1">
+      <div className="md:w-56 md:shrink-0 space-y-5 pt-1">
         <div>
           <Label>Quick check</Label>
-          <h2 className="font-heading text-4xl font-bold text-gray-900 mt-1">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 mt-1">
             Let&rsquo;s see what you remember
           </h2>
         </div>
@@ -521,7 +527,7 @@ function Step4({
       </div>
 
       {/* Right — Q1 always visible, Q2 slides in horizontally */}
-      <div className="flex-1 grid grid-cols-2 gap-6">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
         <QuestionBlock questionIndex={0} answers={answers} content={content} onAnswer={onAnswer} />
 
         <AnimatePresence>
@@ -557,19 +563,18 @@ function Step5({
       {/* Badge with Framer Motion pulse ring */}
       <div className="relative flex items-center justify-center">
         <motion.div
-          className="absolute rounded-full border-4 border-brand-mid"
-          style={{ width: 148, height: 148 }}
+          className="absolute rounded-full border-4 border-brand-mid w-[116px] h-[116px] md:w-[148px] md:h-[148px]"
           animate={{ scale: [1, 1.15, 1] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         />
-        <div className="w-32 h-32 rounded-full bg-brand-dark flex items-center justify-center z-10 shadow-md">
-          <Star className="text-white w-12 h-12" fill="white" />
+        <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-brand-dark flex items-center justify-center z-10 shadow-md">
+          <Star className="text-white w-10 h-10 md:w-12 md:h-12" fill="white" />
         </div>
       </div>
 
       {/* Title */}
       <div className="space-y-1">
-        <h2 className="font-heading text-4xl font-bold text-gray-900">Stock Explorer</h2>
+        <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900">Stock Explorer</h2>
         <p className="font-sans text-sm text-gray-500">
           You completed Lesson 1 — What is a stock?
         </p>
@@ -715,11 +720,11 @@ export default function LessonPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+    <div className="flex flex-col bg-gray-50 min-h-screen md:h-screen">
       <TopBar step={step} />
 
       {/* Content area — vertically + horizontally centered */}
-      <main className="flex-1 flex items-center justify-center px-8 py-12 overflow-hidden">
+      <main className="flex-1 flex items-start md:items-center justify-center px-4 md:px-8 py-8 md:py-12 overflow-y-auto">
         <div key={step} className="animate-fade-up w-full flex justify-center">
           {step === 1 && (
             <Step1

@@ -24,13 +24,15 @@ interface Lesson {
 const LESSONS: Lesson[] = [
   { number: 1, title: "What is a stock?", xp: 100, href: "/lesson" },
   { number: 2, title: "How to buy a stock?", xp: 100, href: "/lesson/2" },
-  { number: 3, title: "What happens after?", xp: 100, href: "" },
-  { number: 4, title: "The simulation", xp: 150, href: "", comingSoon: true },
+  { number: 3, title: "What happens after?", xp: 100, href: "/lesson/3" },
+  { number: 4, title: "The simulation", xp: 150, href: "/lesson/4" },
 ];
 
 function getLessonStatus(lesson: Lesson, pathname: string): LessonStatus {
   const isLesson1Active = pathname === "/lesson";
   const isLesson2Active = pathname === "/lesson/2";
+  const isLesson3Active = pathname === "/lesson/3";
+  const isLesson4Active = pathname === "/lesson/4";
 
   if (lesson.number === 1) {
     return isLesson1Active ? "current" : "completed";
@@ -38,6 +40,16 @@ function getLessonStatus(lesson: Lesson, pathname: string): LessonStatus {
   if (lesson.number === 2) {
     if (isLesson1Active) return "locked";
     if (isLesson2Active) return "current";
+    return "completed";
+  }
+  if (lesson.number === 3) {
+    if (isLesson1Active || isLesson2Active) return "locked";
+    if (isLesson3Active) return "current";
+    return "completed";
+  }
+  if (lesson.number === 4) {
+    if (isLesson1Active || isLesson2Active || isLesson3Active) return "locked";
+    if (isLesson4Active) return "current";
     return "completed";
   }
   return "locked";
@@ -93,10 +105,9 @@ export function LessonsDropdown() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -8, opacity: 0 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute top-full right-0 mt-2 z-50
-                       max-sm:left-1/2 max-sm:-translate-x-1/2 max-sm:w-[calc(100vw-2rem)]"
+            className="fixed top-28 left-4 right-4 sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2 z-50"
           >
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-5 w-80">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 sm:p-5 sm:w-80">
               {/* Module heading */}
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen className="w-4 h-4 text-gray-400 shrink-0" />
@@ -156,7 +167,7 @@ export function LessonsDropdown() {
                         {/* Right: badges */}
                         <div className="flex items-center gap-1.5 shrink-0">
                           {lesson.comingSoon && (
-                            <span className="bg-amber-100 text-amber-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                            <span className="font-sans bg-amber-100 text-amber-700 text-xs font-medium px-2 py-0.5 rounded-full">
                               Coming soon
                             </span>
                           )}

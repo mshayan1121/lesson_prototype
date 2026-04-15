@@ -4,18 +4,17 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import {
-  Building2,
-  ShoppingCart,
-  SlidersHorizontal,
+  BarChart3,
   TrendingUp,
+  ArrowUpDown,
   CheckCircle,
   CheckCircle2,
   XCircle,
   Check,
+  Wallet,
   Users,
-  DollarSign,
+  RefreshCw,
   Clock,
-  Percent,
 } from "lucide-react";
 import { LessonsDropdown } from "@/components/LessonsDropdown";
 import Link from "next/link";
@@ -29,83 +28,91 @@ interface LessonContent {
   p1: string;
   p2: string;
   p3: string;
+  sliderNote: string;
   quizFeedbackCorrect: string;
   quizFeedbackWrong: string;
-  orderNote: string;
 }
 
 // ─── Content ──────────────────────────────────────────────────────────────────
 const LESSON_CONTENT: Record<AgeGroup, LessonContent> = {
   "8-10": {
     intro:
-      "A broker is like a shopkeeper for stocks. You tell them what you want to buy and they get it for you.",
-    p1: "A broker is like a shopkeeper for stocks — you walk in, say 'I want one share of Apple', and they get it for you. Without a broker, you can't buy stocks.",
-    p2: "A buy order is like a shopping list. You write down what you want (Apple stock), how many (1 share), and your broker goes and gets it from someone who wants to sell.",
-    p3: "A market order says 'buy right now at whatever price it is'. A limit order says 'only buy if the price is this low or lower'. It's like saying you'll only buy a toy if it goes on sale.",
+      "A portfolio is like your collection of stocks — like a sticker collection but worth real money.",
+    p1: "A portfolio is all the stocks you own at once. Imagine a bag where you keep all your stickers — your portfolio is that bag, but instead of stickers it holds pieces of real companies.",
+    p2: "Stock prices go up and down every day because of how many people want to buy or sell. If lots of people want a stock, the price goes up. If people don't want it, the price goes down.",
+    p3: "Profit means your stock is now worth more than you paid — you made money! Loss means it's worth less — but only if you sell. If you wait, prices can go back up.",
+    sliderNote:
+      "Move the slider to see how your portfolio changes when the market goes up or down. Don't worry about the red — it happens to every investor!",
     quizFeedbackCorrect: "Woohoo! You got it right!",
     quizFeedbackWrong: "Almost! The green answer is correct.",
-    orderNote:
-      "You just told a broker 'buy me some Apple!' — and they did it instantly. That's all investing really is.",
   },
   "11-13": {
     intro:
-      "A broker is a platform or app where you can buy and sell stocks. Examples are apps like Robinhood or eToro.",
-    p1: "A broker is a platform like Robinhood, eToro, or Fidelity where you create an account, add money, and then buy or sell stocks. You need a broker account to access the stock market.",
-    p2: "A buy order tells your broker: 'buy X shares of this stock'. Once you submit it, your broker finds a seller on the stock exchange and completes the trade — usually in milliseconds.",
-    p3: "A market order buys immediately at the current price. A limit order lets you set a maximum price you're willing to pay — your order only executes if the stock drops to that price.",
+      "A portfolio is all the stocks you own. When prices go up your portfolio grows, when they go down it shrinks.",
+    p1: "A portfolio is everything you've invested in. You might own Apple for tech, Nike for sports brands, and Tesla for electric cars — together that's your portfolio and it's diversified across different industries.",
+    p2: "Prices change based on supply and demand. If Apple announces record profits, more people want to buy so the price rises. If there's bad news, people sell and the price drops. This happens every trading day.",
+    p3: "Profit (gain) is when your stock price is higher than what you paid. Loss is when it's lower. You only truly profit or lose when you actually sell — until then, it's just 'on paper'.",
+    sliderNote:
+      "This slider simulates a market move. Real portfolios move like this every day — up or down based on news, economic data, and investor sentiment.",
     quizFeedbackCorrect: "Correct! You understand how stocks work.",
     quizFeedbackWrong: "Not quite. The green answer is correct.",
-    orderNote:
-      "That's a real broker screen. You just placed a simulated market order — in a real app, your trade would execute in under a second.",
   },
   "14-17": {
     intro:
-      "A broker is a licensed intermediary that executes buy and sell orders on your behalf on the stock exchange. They charge a small fee called a commission.",
-    p1: "A broker is a licensed intermediary — FINRA-regulated in the US — that routes your orders to exchanges like NYSE or NASDAQ. Modern retail brokers (Robinhood, Fidelity) operate on a PFOF (Payment For Order Flow) model, which is how they offer $0 commissions.",
-    p2: "A buy order creates a trade request specifying ticker, quantity, and order type. It goes through your broker's OMS (Order Management System) to the exchange, where it matches with a sell order in the order book, usually within milliseconds.",
-    p3: "A market order executes immediately at the best available ask price — guaranteed fill, but price may vary in volatile markets (slippage). A limit order only fills at your specified price or better — guaranteed price, but execution is not guaranteed.",
-    quizFeedbackCorrect: "Correct. Solid understanding of brokerage mechanics.",
+      "A portfolio is the total collection of your investments. Its value fluctuates based on the market price of each asset you hold.",
+    p1: "A portfolio represents your total invested capital across different securities. Diversification across sectors (tech, consumer, EV) reduces unsystematic risk — when one sector underperforms, others may compensate.",
+    p2: "Stock prices reflect the market's collective forecast of future earnings. Prices move on earnings reports, macro data (CPI, Fed rates), geopolitical events, and sentiment shifts. Price discovery happens continuously via the bid-ask mechanism on exchanges.",
+    p3: "Unrealised P&L is the change in market value versus your cost basis — it's theoretical until you sell. Realised P&L is locked in at point of sale. Tax treatment differs: short-term gains (<1 year) are taxed as income; long-term gains get preferential rates.",
+    sliderNote:
+      "This simulates a uniform market beta move. In reality, each stock has its own beta (sensitivity to market moves) — TSLA typically moves more than AAPL on any given market swing.",
+    quizFeedbackCorrect: "Correct. Solid understanding of portfolio mechanics.",
     quizFeedbackWrong: "Incorrect. The correct answer is highlighted in green.",
-    orderNote:
-      "Market orders guarantee execution but not price. In high-volume stocks like AAPL, slippage is typically sub-cent. Limit orders protect against slippage but risk non-execution.",
   },
 };
 
+// ─── Quiz ─────────────────────────────────────────────────────────────────────
 const QUIZ_QUESTIONS: Array<{
   question: string;
   options: string[];
   correctIndex: number;
 }> = [
   {
-    question: "What is a broker?",
+    question: "What is a portfolio?",
     options: [
       "A type of stock",
-      "A platform where you buy and sell stocks",
-      "A company like Apple",
+      "All the investments you own",
+      "A broker app",
     ],
     correctIndex: 1,
   },
   {
-    question: "What do you need to buy a stock?",
-    options: [
-      "A broker account and money",
-      "Just a phone",
-      "Permission from Apple",
-    ],
-    correctIndex: 0,
+    question: "If a stock price goes up, what happens to your portfolio?",
+    options: ["Nothing changes", "It loses value", "It gains value"],
+    correctIndex: 2,
   },
 ];
 
 const SUMMARY_POINTS = [
-  "A broker is where you buy and sell stocks",
-  "A market order buys at the current price",
-  "You can start investing with as little as $1",
+  "A portfolio is all the stocks you own",
+  "Stock prices change based on supply and demand",
+  "Profit means your stock is worth more than you paid",
 ];
 
-const STOCK_PRICE = 213.5;
+// ─── Holdings ─────────────────────────────────────────────────────────────────
+interface Holding {
+  ticker: string;
+  company: string;
+  shares: number;
+  buyPrice: number;
+}
+
+const HOLDINGS: Holding[] = [
+  { ticker: "AAPL", company: "Apple Inc.", shares: 2, buyPrice: 150 },
+  { ticker: "NKE", company: "Nike Inc.", shares: 5, buyPrice: 95 },
+  { ticker: "TSLA", company: "Tesla Inc.", shares: 1, buyPrice: 200 },
+];
 
 // ─── Shared primitives ────────────────────────────────────────────────────────
-
 function Label({ children }: { children: React.ReactNode }) {
   return (
     <p className="font-sans text-xs font-semibold uppercase tracking-widest text-brand-mid mb-1">
@@ -139,9 +146,8 @@ function PrimaryButton({
   );
 }
 
-// ─── Step pill bar ────────────────────────────────────────────────────────────
-
-const STEP_LABELS = ["Hook", "How to Buy", "Order Screen", "Quiz", "Badge"] as const;
+// ─── Step pill bar (4 steps) ──────────────────────────────────────────────────
+const STEP_LABELS = ["Hook", "Portfolio", "Slider", "Quiz", "Badge"] as const;
 
 function StepPillBar({ step }: { step: Step }) {
   return (
@@ -186,7 +192,6 @@ function StepPillBar({ step }: { step: Step }) {
                 {STEP_LABELS[i]}
               </motion.span>
             </div>
-
             {i < 4 && <div className="w-4 md:w-10 h-px bg-gray-200 mx-0.5 md:mx-1 mb-4 md:mb-5" />}
           </div>
         );
@@ -196,7 +201,6 @@ function StepPillBar({ step }: { step: Step }) {
 }
 
 // ─── Top header bar ───────────────────────────────────────────────────────────
-
 function TopBar({ step }: { step: Step }) {
   return (
     <header className="shrink-0 bg-white border-b border-gray-100">
@@ -232,24 +236,24 @@ function Step1({
   const stats: Array<{ icon: React.ReactNode; value: string; label: string }> =
     [
       {
-        icon: <Users className="w-4 h-4 text-brand-dark" />,
-        value: "10M+",
-        label: "People who own Apple stock",
+        icon: <Wallet className="w-4 h-4 text-brand-dark" />,
+        value: "$1.3T",
+        label: "Total value of retail investor portfolios in the US",
       },
       {
-        icon: <DollarSign className="w-4 h-4 text-brand-dark" />,
-        value: "$1",
-        label: "Minimum you can invest on some platforms",
+        icon: <Users className="w-4 h-4 text-brand-dark" />,
+        value: "47%",
+        label: "Americans who own at least one stock",
+      },
+      {
+        icon: <RefreshCw className="w-4 h-4 text-brand-dark" />,
+        value: "24hrs",
+        label: "How often market prices update (continuously)",
       },
       {
         icon: <Clock className="w-4 h-4 text-brand-dark" />,
-        value: "3 mins",
-        label: "How long it takes to place an order",
-      },
-      {
-        icon: <Percent className="w-4 h-4 text-brand-dark" />,
-        value: "0%",
-        label: "Commission on many modern brokers",
+        value: "10 yrs",
+        label: "Average holding period for long term investors",
       },
     ];
 
@@ -258,12 +262,12 @@ function Step1({
       {/* Left */}
       <div className="space-y-5">
         <div>
-          <Label>Lesson 2 — Buying Stocks</Label>
+          <Label>Lesson 3 — Your Portfolio</Label>
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 leading-tight mt-1">
-            You know what a stock is. But how do you actually buy one?
+            You bought your first stock. Now what?
           </h1>
           <p className="font-sans text-base text-gray-500 mt-2 leading-relaxed">
-            Millions of people own Apple stock. Let&rsquo;s find out exactly how they got it.
+            Every investor watches their portfolio. Let&rsquo;s see what yours looks like.
           </p>
         </div>
 
@@ -320,7 +324,7 @@ function Step1({
   );
 }
 
-// ─── Step 2 — How to Buy ──────────────────────────────────────────────────────
+// ─── Step 2 — Portfolio Concept ───────────────────────────────────────────────
 function Step2({
   content,
   onNext,
@@ -331,18 +335,18 @@ function Step2({
   const blocks: Array<{ icon: React.ReactNode; title: string; text: string }> =
     [
       {
-        icon: <Building2 className="w-4 h-4 text-brand-dark" />,
-        title: "What is a broker?",
+        icon: <BarChart3 className="w-4 h-4 text-brand-dark" />,
+        title: "What is a portfolio?",
         text: content.p1,
       },
       {
-        icon: <ShoppingCart className="w-4 h-4 text-brand-dark" />,
-        title: "What does a buy order look like?",
+        icon: <TrendingUp className="w-4 h-4 text-brand-dark" />,
+        title: "Why do stock prices change?",
         text: content.p2,
       },
       {
-        icon: <SlidersHorizontal className="w-4 h-4 text-brand-dark" />,
-        title: "Market price vs limit price",
+        icon: <ArrowUpDown className="w-4 h-4 text-brand-dark" />,
+        title: "What is profit and loss?",
         text: content.p3,
       },
     ];
@@ -354,13 +358,15 @@ function Step2({
         <div>
           <Label>The Concept</Label>
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 mt-1">
-            What do you need to buy a stock?
+            What is a portfolio?
           </h2>
           <p className="font-sans text-lg text-gray-600 mt-2 leading-relaxed">
             {content.intro}
           </p>
         </div>
-        <PrimaryButton onClick={onNext}>Show me the order screen →</PrimaryButton>
+        <PrimaryButton onClick={onNext}>
+          Show me my portfolio →
+        </PrimaryButton>
       </div>
 
       {/* Right — concept blocks */}
@@ -384,7 +390,34 @@ function Step2({
   );
 }
 
-// ─── Step 3 — Order Screen ────────────────────────────────────────────────────
+// ─── Step 3 — Portfolio + Slider ──────────────────────────────────────────────
+function formatDelta(amount: number): string {
+  const sign = amount >= 0 ? "+" : "";
+  return `${sign}$${Math.abs(amount).toFixed(2)}`;
+}
+
+function formatPct(pct: number): string {
+  const sign = pct >= 0 ? "+" : "";
+  return `${sign}${pct.toFixed(1)}%`;
+}
+
+function getSliderMessage(marketChange: number): string {
+  if (marketChange < -20)
+    return "Market crash! Stay calm — long term investors don't panic sell.";
+  if (marketChange < 0)
+    return "Market dip. This is normal. Many investors buy more here.";
+  if (marketChange <= 30)
+    return "Steady growth. Your portfolio is doing well!";
+  return "Bull market! Your investments are growing fast.";
+}
+
+function getSliderMessageColor(marketChange: number): string {
+  if (marketChange < -20) return "text-red-700 bg-red-50 border-red-200";
+  if (marketChange < 0) return "text-amber-700 bg-amber-50 border-amber-200";
+  if (marketChange <= 30) return "text-green-700 bg-green-50 border-green-200";
+  return "text-brand-dark bg-brand-light border-green-200";
+}
+
 function Step3({
   content,
   onNext,
@@ -392,219 +425,224 @@ function Step3({
   content: LessonContent;
   onNext: () => void;
 }) {
-  const [quantity, setQuantity] = useState(1);
-  const [orderType, setOrderType] = useState<"market" | "limit">("market");
-  const [ordered, setOrdered] = useState(false);
-  const orderConfettiRef = useRef(false);
+  const [marketChange, setMarketChange] = useState(0);
+  const sliderRef = useRef<HTMLInputElement>(null);
 
-  const total = (quantity * STOCK_PRICE).toFixed(2);
+  const totalCost = HOLDINGS.reduce(
+    (sum, h) => sum + h.shares * h.buyPrice,
+    0
+  );
+  const totalCurrent = HOLDINGS.reduce((sum, h) => {
+    const currentPrice = h.buyPrice * (1 + marketChange / 100);
+    return sum + h.shares * currentPrice;
+  }, 0);
+  const totalDelta = totalCurrent - totalCost;
+  const totalPct = (totalDelta / totalCost) * 100;
 
-  function handleBuy() {
-    if (ordered) return;
-    setOrdered(true);
-    if (!orderConfettiRef.current) {
-      orderConfettiRef.current = true;
-      confetti({
-        particleCount: 70,
-        spread: 55,
-        colors: ["#3B6D11", "#639922", "#EAF3DE", "#a8d85a"],
-        origin: { y: 0.5 },
-      });
-    }
-  }
+  const isPositive = marketChange >= 0;
 
   return (
-    <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-start w-full max-w-5xl">
-      {/* Left */}
-      <div className="space-y-5 pt-1">
-        <div>
-          <Label>See it in action</Label>
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 mt-1">
-            Place your first order
-          </h2>
-          <p className="font-sans text-base text-gray-500 mt-2 leading-relaxed">
-            This is what a real broker screen looks like. Try placing a buy order.
-          </p>
-        </div>
-
-        <AnimatePresence mode="wait">
-          {!ordered ? (
-            <motion.p
-              key="note-pre"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="font-sans text-sm text-gray-500 italic leading-relaxed bg-brand-light rounded-xl px-4 py-3"
-            >
-              {content.intro}
-            </motion.p>
-          ) : (
-            <motion.div
-              key="note-post"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="font-sans text-sm text-gray-600 leading-relaxed bg-brand-light rounded-xl px-4 py-3"
-            >
-              {content.orderNote}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {ordered && (
-            <motion.div
-              key="next-btn"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
-              <PrimaryButton onClick={onNext} className="!w-full !font-semibold !text-base">
-                I get it — take the quiz →
-              </PrimaryButton>
-            </motion.div>
-          )}
-        </AnimatePresence>
+    <div className="w-full max-w-5xl space-y-6">
+      {/* Header */}
+      <div className="space-y-1">
+        <Label>See it in action</Label>
+        <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900">
+          Your portfolio
+        </h2>
+        <p className="font-sans text-base text-gray-500">
+          You invested $1,000. Here&rsquo;s what happened over the past year.
+        </p>
       </div>
 
-      {/* Right — broker card */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
-        {/* Card header */}
-        <div className="bg-brand-dark px-5 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-heading text-lg font-bold text-white leading-none">
-                AAPL
-              </p>
-              <p className="font-sans text-xs text-green-200 mt-0.5">Apple Inc.</p>
-            </div>
-            <div className="text-right">
-              <div className="flex items-center gap-1.5 justify-end">
-                <TrendingUp className="w-3.5 h-3.5 text-green-400" />
-                <span className="font-sans text-xs font-semibold text-green-400">
-                  +2.4% today
-                </span>
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-start">
+        {/* Portfolio card */}
+        <div className="col-span-1 md:col-span-3 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+          <div className="min-w-[420px]">
+          {/* Table header */}
+          <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100">
+            <p className="font-sans text-xs font-semibold text-gray-400 uppercase tracking-widest">
+              Stock
+            </p>
+            <p className="font-sans text-xs font-semibold text-gray-400 uppercase tracking-widest text-right">
+              Shares
+            </p>
+            <p className="font-sans text-xs font-semibold text-gray-400 uppercase tracking-widest text-right">
+              Buy
+            </p>
+            <p className="font-sans text-xs font-semibold text-gray-400 uppercase tracking-widest text-right">
+              Now
+            </p>
+            <p className="font-sans text-xs font-semibold text-gray-400 uppercase tracking-widest text-right">
+              P/L
+            </p>
+          </div>
+
+          {/* Rows */}
+          {HOLDINGS.map((h) => {
+            const currentPrice = h.buyPrice * (1 + marketChange / 100);
+            const delta = h.shares * (currentPrice - h.buyPrice);
+            const pct = ((currentPrice - h.buyPrice) / h.buyPrice) * 100;
+            const isUp = delta >= 0;
+
+            return (
+              <div
+                key={h.ticker}
+                className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-3 px-5 py-3.5 border-b border-gray-50 items-center"
+              >
+                {/* Ticker + company */}
+                <div>
+                  <p className="font-heading text-sm font-bold text-gray-800">
+                    {h.ticker}
+                  </p>
+                  <p className="font-sans text-xs text-gray-400">{h.company}</p>
+                </div>
+                <p className="font-sans text-sm text-gray-600 text-right">
+                  {h.shares}
+                </p>
+                <p className="font-sans text-sm text-gray-600 text-right">
+                  ${h.buyPrice.toFixed(2)}
+                </p>
+                <p className="font-sans text-sm font-semibold text-gray-800 text-right tabular-nums">
+                  ${currentPrice.toFixed(2)}
+                </p>
+                <div className="text-right">
+                  <p
+                    className={`font-sans text-sm font-bold tabular-nums ${
+                      isUp ? "text-green-600" : "text-red-500"
+                    }`}
+                  >
+                    {formatDelta(delta)}
+                  </p>
+                  <p
+                    className={`font-sans text-xs tabular-nums ${
+                      isUp ? "text-green-500" : "text-red-400"
+                    }`}
+                  >
+                    {formatPct(pct)}
+                  </p>
+                </div>
               </div>
-              <p className="font-heading text-2xl font-bold text-white mt-0.5">
-                $213.50
+            );
+          })}
+
+          {/* Total row */}
+          <div className="px-5 py-4 flex items-center justify-between">
+            <p className="font-sans text-xs font-semibold text-gray-400 uppercase tracking-widest">
+              Total portfolio
+            </p>
+            <div className="text-right">
+              <motion.p
+                key={totalCurrent.toFixed(2)}
+                initial={{ opacity: 0.6 }}
+                animate={{ opacity: 1 }}
+                className="font-heading text-2xl font-bold text-gray-900 tabular-nums"
+              >
+                ${totalCurrent.toFixed(2)}
+              </motion.p>
+              <p
+                className={`font-sans text-sm font-bold tabular-nums ${
+                  totalDelta >= 0 ? "text-green-600" : "text-red-500"
+                }`}
+              >
+                {formatDelta(totalDelta)} ({formatPct(totalPct)})
               </p>
             </div>
           </div>
+          </div>
+          </div>
         </div>
 
-        {/* Card body */}
-        <AnimatePresence mode="wait">
-          {!ordered ? (
-            <motion.div
-              key="order-form"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="p-5 space-y-4"
-            >
-              {/* Order type toggle */}
-              <div>
-                <p className="font-sans text-xs text-gray-400 font-medium mb-1.5">
-                  Order type
-                </p>
-                <div className="flex rounded-xl border border-gray-200 overflow-hidden">
-                  {(["market", "limit"] as const).map((type) => (
-                    <button
-                      key={type}
-                      onClick={() => setOrderType(type)}
-                      className={`flex-1 py-2.5 text-sm font-semibold font-sans transition-colors duration-200 cursor-pointer
-                        ${
-                          orderType === type
-                            ? "bg-brand-dark text-white"
-                            : "bg-white text-gray-500 hover:bg-brand-light"
-                        }`}
-                    >
-                      {type === "market" ? "Market Order" : "Limit Order"}
-                    </button>
-                  ))}
-                </div>
+        {/* Right panel — slider + note + button */}
+        <div className="col-span-1 md:col-span-2 space-y-5">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
+            <div>
+              <p className="font-heading text-sm font-bold text-gray-800 mb-0.5">
+                Move the market
+              </p>
+              <p className="font-sans text-xs text-gray-400">
+                Drag the slider to simulate a market move
+              </p>
+            </div>
+
+            {/* Slider */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-sans text-xs text-gray-400">−50%</span>
+                <span
+                  className={`font-heading text-lg font-bold tabular-nums ${
+                    isPositive ? "text-green-600" : "text-red-500"
+                  }`}
+                >
+                  {formatPct(marketChange)}
+                </span>
+                <span className="font-sans text-xs text-gray-400">+100%</span>
               </div>
 
-              {/* Quantity */}
-              <div>
-                <p className="font-sans text-xs text-gray-400 font-medium mb-1.5">
-                  Quantity (shares)
-                </p>
+              <div className="relative">
+                {/* Colored track fill */}
+                <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                  {/* Zero point is at 33.33% of slider width (50 / 150 total range) */}
+                  {isPositive ? (
+                    <div
+                      className="absolute h-2 bg-green-500 rounded-full transition-none"
+                      style={{
+                        left: "33.33%",
+                        width: `${(marketChange / 150) * 100}%`,
+                      }}
+                    />
+                  ) : (
+                    <div
+                      className="absolute h-2 bg-red-400 rounded-full transition-none"
+                      style={{
+                        right: `${100 - 33.33}%`,
+                        width: `${(Math.abs(marketChange) / 150) * 100}%`,
+                      }}
+                    />
+                  )}
+                </div>
                 <input
-                  type="number"
-                  min={1}
+                  ref={sliderRef}
+                  type="range"
+                  min={-50}
                   max={100}
-                  value={quantity}
-                  onChange={(e) => {
-                    const v = parseInt(e.target.value, 10);
-                    if (!isNaN(v) && v >= 1 && v <= 100) setQuantity(v);
+                  step={1}
+                  value={marketChange}
+                  onChange={(e) => setMarketChange(Number(e.target.value))}
+                  className="absolute inset-0 w-full opacity-0 cursor-pointer h-2"
+                  style={{ zIndex: 10 }}
+                />
+                {/* Visible thumb */}
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-white shadow-md transition-colors duration-200 pointer-events-none ${
+                    isPositive ? "bg-green-500" : "bg-red-400"
+                  }`}
+                  style={{
+                    left: `calc(${((marketChange + 50) / 150) * 100}% - 10px)`,
                   }}
-                  className="font-sans w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800
-                             focus:outline-none focus:ring-2 focus:ring-brand-mid focus:border-transparent transition"
                 />
               </div>
+            </div>
 
-              {/* Estimated total */}
-              <div className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
-                <p className="font-sans text-xs text-gray-500 font-medium">
-                  Estimated total
-                </p>
-                <p className="font-heading text-lg font-bold text-gray-800">
-                  ${total}
-                </p>
-              </div>
-
-              {/* Available balance */}
-              <div className="flex items-center justify-between px-1">
-                <p className="font-sans text-xs text-gray-400">
-                  Available balance
-                </p>
-                <p className="font-sans text-xs font-semibold text-gray-600">
-                  $1,000.00
-                </p>
-              </div>
-
-              {/* Buy button */}
-              <button
-                onClick={handleBuy}
-                className="font-sans w-full rounded-xl bg-green-600 text-white py-3.5 font-bold text-sm
-                           hover:bg-green-700 active:scale-[0.99] transition-all duration-150 cursor-pointer shadow-sm"
-              >
-                Buy AAPL
-              </button>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="order-success"
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="p-5 flex flex-col items-center text-center gap-4 py-10"
+            {/* Dynamic message */}
+            <div
+              className={`font-sans text-xs font-medium px-3 py-2.5 rounded-xl border leading-snug ${getSliderMessageColor(
+                marketChange
+              )}`}
             >
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircle className="w-9 h-9 text-green-600" />
-              </div>
-              <div>
-                <p className="font-heading text-2xl font-bold text-gray-900">
-                  Order placed!
-                </p>
-                <p className="font-sans text-sm text-gray-500 mt-1 leading-relaxed">
-                  You just bought{" "}
-                  <span className="font-bold text-brand-dark">
-                    {quantity} share{quantity !== 1 ? "s" : ""}
-                  </span>{" "}
-                  of Apple for{" "}
-                  <span className="font-bold text-brand-dark">${total}</span>
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 bg-green-50 rounded-full px-4 py-2">
-                <TrendingUp className="w-4 h-4 text-green-600" />
-                <span className="font-sans text-xs font-semibold text-green-700">
-                  You&rsquo;re now an Apple investor
-                </span>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              {getSliderMessage(marketChange)}
+            </div>
+          </div>
+
+          {/* Age note */}
+          <p className="font-sans text-xs text-gray-400 italic leading-relaxed">
+            {content.sliderNote}
+          </p>
+
+          <PrimaryButton onClick={onNext} className="!w-full">
+            I get it — take the quiz →
+          </PrimaryButton>
+        </div>
       </div>
     </div>
   );
@@ -674,9 +712,7 @@ function QuestionBlock({
           ) : (
             <XCircle className="w-4 h-4 shrink-0" />
           )}
-          {isCorrect
-            ? content.quizFeedbackCorrect
-            : content.quizFeedbackWrong}
+          {isCorrect ? content.quizFeedbackCorrect : content.quizFeedbackWrong}
         </div>
       )}
     </div>
@@ -699,7 +735,7 @@ function Step4({
 
   return (
     <div className="w-full max-w-5xl flex flex-col md:flex-row gap-8 md:gap-12 items-start">
-      {/* Left — title + button */}
+      {/* Left — title + xp + button */}
       <div className="md:w-56 md:shrink-0 space-y-5 pt-1">
         <div>
           <Label>Quick check</Label>
@@ -707,6 +743,9 @@ function Step4({
             Let&rsquo;s see what you remember
           </h2>
         </div>
+        <p className="font-sans text-xs text-gray-400">
+          +50 XP per correct answer
+        </p>
         <div className={bothAnswered ? "visible" : "invisible"}>
           <PrimaryButton onClick={onNext}>Claim your badge →</PrimaryButton>
         </div>
@@ -720,7 +759,6 @@ function Step4({
           content={content}
           onAnswer={onAnswer}
         />
-
         <AnimatePresence>
           {q1Answered && (
             <motion.div
@@ -764,17 +802,17 @@ function Step5({
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         />
         <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-brand-dark flex items-center justify-center z-10 shadow-md">
-          <ShoppingCart className="text-white w-10 h-10 md:w-12 md:h-12" />
+          <BarChart3 className="text-white w-10 h-10 md:w-12 md:h-12" />
         </div>
       </div>
 
       {/* Title */}
       <div className="space-y-1">
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900">
-          First Buyer
+          Portfolio Pro
         </h2>
         <p className="font-sans text-sm text-gray-500">
-          You completed Lesson 2 — How to buy a stock
+          You completed Lesson 3 — What happens after you buy?
         </p>
       </div>
 
@@ -796,7 +834,7 @@ function Step5({
         </div>
       </div>
 
-      {/* Summary */}
+      {/* Summary checklist */}
       <div className="w-full space-y-3 text-left">
         <p className="font-sans text-xs font-semibold text-gray-500 uppercase tracking-widest">
           What you learned
@@ -818,10 +856,10 @@ function Step5({
         ))}
       </div>
 
-      {/* Actions */}
+      {/* Buttons */}
       <div className="flex gap-3 w-full">
         <Link
-          href="/lesson/3"
+          href="/lesson/4"
           className="font-sans flex-1 text-center rounded-full bg-brand-dark text-white px-6 py-3 font-bold text-sm
                      hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150 shadow-sm"
         >
@@ -841,7 +879,7 @@ function Step5({
 }
 
 // ─── Main page ────────────────────────────────────────────────────────────────
-export default function Lesson2Page() {
+export default function Lesson3Page() {
   const [step, setStep] = useState<Step>(1);
   const [ageGroup, setAgeGroup] = useState<AgeGroup | null>(null);
   const [answers, setAnswers] = useState<(number | null)[]>([null, null]);
