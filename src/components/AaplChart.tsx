@@ -32,6 +32,7 @@ export default function AaplChart() {
         background: { type: ColorType.Solid, color: "#ffffff" },
         textColor: "#9ca3af",
         fontSize: 11,
+        attributionLogo: false,
       },
       grid: {
         vertLines: { visible: false },
