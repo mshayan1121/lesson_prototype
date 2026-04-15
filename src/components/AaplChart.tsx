@@ -27,7 +27,7 @@ export default function AaplChart() {
 
     const chart = createChart(containerRef.current, {
       width: containerRef.current.clientWidth,
-      height: 300,
+      height: containerRef.current.clientHeight,
       layout: {
         background: { type: ColorType.Solid, color: "#ffffff" },
         textColor: "#9ca3af",
@@ -74,6 +74,7 @@ export default function AaplChart() {
       if (containerRef.current && chartRef.current) {
         chartRef.current.applyOptions({
           width: containerRef.current.clientWidth,
+          height: containerRef.current.clientHeight,
         });
       }
     };
@@ -88,6 +89,6 @@ export default function AaplChart() {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full" style={{ height: 300 }} />
+    <div ref={containerRef} className="w-full h-[220px] md:h-[300px]" />
   );
 }

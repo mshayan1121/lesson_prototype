@@ -268,7 +268,6 @@ function Step1({
       {/* Left */}
       <div className="space-y-5">
         <div>
-          <Label>Lesson 1 — Stocks</Label>
           <h1 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 leading-tight mt-1">
             How does Apple make $383 billion a year?
           </h1>
@@ -398,10 +397,12 @@ function Step3({
   onNext: () => void;
 }) {
   return (
-    <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-start md:items-center w-full max-w-5xl">
-      {/* Left */}
-      <div className="space-y-5">
-        <div>
+    <div className="w-full max-w-5xl">
+      {/* On mobile: flex column (heading → chart → stats → button).
+          On desktop: 2-col grid with chart spanning both rows on the right. */}
+      <div className="flex flex-col md:grid md:grid-cols-2 md:gap-12 md:items-center">
+        {/* Left row 1 — heading */}
+        <div className="mb-4 md:mb-0">
           <Label>See it in action</Label>
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-gray-900 mt-1">
             Apple&rsquo;s stock price over time
@@ -411,26 +412,27 @@ function Step3({
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center hover:-translate-y-0.5 transition-transform duration-200">
-            <p className="font-sans text-xs text-gray-400 mb-1">If you bought in 2019</p>
-            <p className="font-heading text-3xl font-bold text-gray-700">$1,000</p>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center hover:-translate-y-0.5 transition-transform duration-200">
-            <p className="font-sans text-xs text-gray-400 mb-1">Value today (~6 yrs later)</p>
-            <p className="font-heading text-3xl font-bold text-brand-dark">~$5,200</p>
-          </div>
+        {/* Right — chart (row-span-2 on desktop; sits between heading and stats on mobile) */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-md p-4 md:p-8 md:row-span-2 mb-4 md:mb-0">
+          <AaplChart />
         </div>
 
-        <p className="font-sans text-sm text-gray-500 italic leading-relaxed">{content.chartNote}</p>
+        {/* Left row 2 — stats + button */}
+        <div className="space-y-5">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center hover:-translate-y-0.5 transition-transform duration-200">
+              <p className="font-sans text-xs text-gray-400 mb-1">If you bought in 2019</p>
+              <p className="font-heading text-3xl font-bold text-gray-700">$1,000</p>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center hover:-translate-y-0.5 transition-transform duration-200">
+              <p className="font-sans text-xs text-gray-400 mb-1">Value today (~6 yrs later)</p>
+              <p className="font-heading text-3xl font-bold text-brand-dark">~$5,200</p>
+            </div>
+          </div>
 
-        <PrimaryButton onClick={onNext}>I&rsquo;m ready for the quiz →</PrimaryButton>
-      </div>
+          <p className="font-sans text-sm text-gray-500 italic leading-relaxed">{content.chartNote}</p>
 
-      {/* Right — chart */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-md p-8 h-full flex items-center">
-        <div className="w-full">
-          <AaplChart />
+          <PrimaryButton onClick={onNext}>I&rsquo;m ready for the quiz →</PrimaryButton>
         </div>
       </div>
     </div>
