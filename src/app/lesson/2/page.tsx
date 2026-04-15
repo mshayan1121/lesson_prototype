@@ -1,33 +1,24 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import Link from "next/link";
 import {
+  Building2,
+  ShoppingCart,
+  SlidersHorizontal,
   TrendingUp,
-  BarChart2,
-  Smartphone,
-  PieChart,
-  Star,
-  CheckCircle2,
   CheckCircle,
+  CheckCircle2,
   XCircle,
-  DollarSign,
   Check,
+  Users,
+  DollarSign,
+  Clock,
+  Percent,
 } from "lucide-react";
 import { LessonsDropdown } from "@/components/LessonsDropdown";
-
-// ─── Dynamic chart import (SSR-unsafe) ───────────────────────────────────────
-const AaplChart = dynamic(() => import("@/components/AaplChart"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-full w-full rounded-xl bg-brand-light animate-pulse flex items-center justify-center min-h-[280px]">
-      <span className="text-sm text-gray-400">Loading chart…</span>
-    </div>
-  ),
-});
+import Link from "next/link";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type AgeGroup = "8-10" | "11-13" | "14-17";
@@ -38,39 +29,45 @@ interface LessonContent {
   p1: string;
   p2: string;
   p3: string;
-  chartNote: string;
   quizFeedbackCorrect: string;
   quizFeedbackWrong: string;
+  orderNote: string;
 }
 
 // ─── Content ──────────────────────────────────────────────────────────────────
 const LESSON_CONTENT: Record<AgeGroup, LessonContent> = {
   "8-10": {
-    intro: "A stock is like owning a tiny slice of a pizza — except the pizza is a company like Apple!",
-    p1: "Your friend needs $10 for a lemonade stand. You chip in $5 and own half. If it earns $20, you get $10 back. Stocks work the same way — but the company is Apple.",
-    p2: "When you buy one tiny piece of Apple (a stock), you own a bit of all those iPhones. If Apple earns more money, your slice becomes worth more too.",
-    p3: "Apple needs a lot of money to build new things. Instead of borrowing from a bank, they sell tiny pieces of themselves — so everyone can be a co-owner.",
-    chartNote: "When the line goes up, your slice is worth more!",
+    intro:
+      "A broker is like a shopkeeper for stocks. You tell them what you want to buy and they get it for you.",
+    p1: "A broker is like a shopkeeper for stocks — you walk in, say 'I want one share of Apple', and they get it for you. Without a broker, you can't buy stocks.",
+    p2: "A buy order is like a shopping list. You write down what you want (Apple stock), how many (1 share), and your broker goes and gets it from someone who wants to sell.",
+    p3: "A market order says 'buy right now at whatever price it is'. A limit order says 'only buy if the price is this low or lower'. It's like saying you'll only buy a toy if it goes on sale.",
     quizFeedbackCorrect: "Woohoo! You got it right!",
     quizFeedbackWrong: "Almost! The green answer is correct.",
+    orderNote:
+      "You just told a broker 'buy me some Apple!' — and they did it instantly. That's all investing really is.",
   },
   "11-13": {
-    intro: "A stock is a share of ownership in a company. Buy a stock, become a part-owner.",
-    p1: "Think of owning a piece of your favorite sports team. If the team gets more popular, your piece becomes more valuable. Stocks work the same way.",
-    p2: "Apple earns ~$383B a year. The stock price reflects what people expect Apple to earn in the future — when expectations rise, the price rises.",
-    p3: "To fund a new factory or 10,000 engineers, Apple sells shares to the public (an IPO). You give money; you get part ownership and a share of future profits.",
-    chartNote: "Notice the 2022 dip — tough year for the market. Apple bounced back hard.",
+    intro:
+      "A broker is a platform or app where you can buy and sell stocks. Examples are apps like Robinhood or eToro.",
+    p1: "A broker is a platform like Robinhood, eToro, or Fidelity where you create an account, add money, and then buy or sell stocks. You need a broker account to access the stock market.",
+    p2: "A buy order tells your broker: 'buy X shares of this stock'. Once you submit it, your broker finds a seller on the stock exchange and completes the trade — usually in milliseconds.",
+    p3: "A market order buys immediately at the current price. A limit order lets you set a maximum price you're willing to pay — your order only executes if the stock drops to that price.",
     quizFeedbackCorrect: "Correct! You understand how stocks work.",
     quizFeedbackWrong: "Not quite. The green answer is correct.",
+    orderNote:
+      "That's a real broker screen. You just placed a simulated market order — in a real app, your trade would execute in under a second.",
   },
   "14-17": {
-    intro: "A stock is equity — partial ownership with a proportional claim on assets and earnings.",
-    p1: "When Apple's net income rises, EPS increases, so investors pay more per share. The P/E ratio tells you how many dollars investors pay per dollar of earnings.",
-    p2: "Apple's ~$3T market cap reflects the present value of all expected future cash flows (DCF). When growth expectations rise, so does the price — even without a change in today's earnings.",
-    p3: "Equity doesn't require repayment like debt, offering higher potential returns with more volatility. Apple's ~35% profit margin drives its premium valuation multiple.",
-    chartNote: "Price only — reinvested dividends and buybacks push real returns even higher.",
-    quizFeedbackCorrect: "Correct. Solid understanding of equity valuation.",
+    intro:
+      "A broker is a licensed intermediary that executes buy and sell orders on your behalf on the stock exchange. They charge a small fee called a commission.",
+    p1: "A broker is a licensed intermediary — FINRA-regulated in the US — that routes your orders to exchanges like NYSE or NASDAQ. Modern retail brokers (Robinhood, Fidelity) operate on a PFOF (Payment For Order Flow) model, which is how they offer $0 commissions.",
+    p2: "A buy order creates a trade request specifying ticker, quantity, and order type. It goes through your broker's OMS (Order Management System) to the exchange, where it matches with a sell order in the order book, usually within milliseconds.",
+    p3: "A market order executes immediately at the best available ask price — guaranteed fill, but price may vary in volatile markets (slippage). A limit order only fills at your specified price or better — guaranteed price, but execution is not guaranteed.",
+    quizFeedbackCorrect: "Correct. Solid understanding of brokerage mechanics.",
     quizFeedbackWrong: "Incorrect. The correct answer is highlighted in green.",
+    orderNote:
+      "Market orders guarantee execution but not price. In high-volume stocks like AAPL, slippage is typically sub-cent. Limit orders protect against slippage but risk non-execution.",
   },
 };
 
@@ -80,30 +77,32 @@ const QUIZ_QUESTIONS: Array<{
   correctIndex: number;
 }> = [
   {
-    question: "What is a stock?",
+    question: "What is a broker?",
     options: [
-      "A loan you give to a company",
-      "A small piece of ownership in a company",
-      "The price of a product in a store",
+      "A type of stock",
+      "A platform where you buy and sell stocks",
+      "A company like Apple",
     ],
     correctIndex: 1,
   },
   {
-    question: "If Apple's stock price goes up, what happens?",
+    question: "What do you need to buy a stock?",
     options: [
-      "Apple gives you a free iPhone",
-      "Nothing — it doesn't affect you",
-      "Your share is worth more money",
+      "A broker account and money",
+      "Just a phone",
+      "Permission from Apple",
     ],
-    correctIndex: 2,
+    correctIndex: 0,
   },
 ];
 
 const SUMMARY_POINTS = [
-  "A stock is a small ownership piece of a company",
-  "When a company grows, your stock can be worth more",
-  "Companies sell stocks to raise money to grow",
+  "A broker is where you buy and sell stocks",
+  "A market order buys at the current price",
+  "You can start investing with as little as $1",
 ];
+
+const STOCK_PRICE = 213.5;
 
 // ─── Shared primitives ────────────────────────────────────────────────────────
 
@@ -142,7 +141,7 @@ function PrimaryButton({
 
 // ─── Step pill bar ────────────────────────────────────────────────────────────
 
-const STEP_LABELS = ["Hook", "Concept", "Chart", "Quiz", "Badge"] as const;
+const STEP_LABELS = ["Hook", "How to Buy", "Order Screen", "Quiz", "Badge"] as const;
 
 function StepPillBar({ step }: { step: Step }) {
   return (
@@ -153,7 +152,6 @@ function StepPillBar({ step }: { step: Step }) {
 
         return (
           <div key={n} className="flex items-center">
-            {/* Step node */}
             <div className="flex flex-col items-center gap-1">
               <motion.div
                 animate={{
@@ -183,13 +181,12 @@ function StepPillBar({ step }: { step: Step }) {
               <motion.span
                 animate={{ color: isActive ? "#639922" : "#9CA3AF" }}
                 transition={{ duration: 0.35 }}
-                className={`font-sans text-xs ${isActive ? "font-bold" : "font-medium"}`}
+                className={`font-sans text-xs ${isActive ? "font-bold" : "font-medium"} whitespace-nowrap`}
               >
                 {STEP_LABELS[i]}
               </motion.span>
             </div>
 
-            {/* Connector line */}
             {i < 4 && <div className="w-10 h-px bg-gray-200 mx-1 mb-5" />}
           </div>
         );
@@ -229,24 +226,24 @@ function Step1({
   const stats: Array<{ icon: React.ReactNode; value: string; label: string }> =
     [
       {
+        icon: <Users className="w-4 h-4 text-brand-dark" />,
+        value: "10M+",
+        label: "People who own Apple stock",
+      },
+      {
         icon: <DollarSign className="w-4 h-4 text-brand-dark" />,
-        value: "$383B",
-        label: "Apple revenue (2023)",
+        value: "$1",
+        label: "Minimum you can invest on some platforms",
       },
       {
-        icon: <TrendingUp className="w-4 h-4 text-brand-dark" />,
-        value: "$3T",
-        label: "What investors say it's worth",
+        icon: <Clock className="w-4 h-4 text-brand-dark" />,
+        value: "3 mins",
+        label: "How long it takes to place an order",
       },
       {
-        icon: <Smartphone className="w-4 h-4 text-brand-dark" />,
-        value: "2.2B",
-        label: "iPhones in use worldwide",
-      },
-      {
-        icon: <BarChart2 className="w-4 h-4 text-brand-dark" />,
-        value: "~35%",
-        label: "Goes straight to profit",
+        icon: <Percent className="w-4 h-4 text-brand-dark" />,
+        value: "0%",
+        label: "Commission on many modern brokers",
       },
     ];
 
@@ -255,19 +252,14 @@ function Step1({
       {/* Left */}
       <div className="space-y-5">
         <div>
-          <Label>Lesson 1 — Stocks</Label>
+          <Label>Lesson 2 — Buying Stocks</Label>
           <h1 className="font-heading text-4xl font-bold text-gray-900 leading-tight mt-1">
-            How does Apple make $383 billion a year?
+            You know what a stock is. But how do you actually buy one?
           </h1>
           <p className="font-sans text-base text-gray-500 mt-2 leading-relaxed">
-            Start with something you know — work backwards to understand investing.
+            Millions of people own Apple stock. Let&rsquo;s find out exactly how they got it.
           </p>
         </div>
-
-        <p className="font-sans text-base font-semibold text-gray-800 bg-brand-light rounded-xl px-4 py-3 leading-snug">
-          You didn&rsquo;t build Apple. Can you still own a piece of it?{" "}
-          <span className="text-brand-dark">Yes. That&rsquo;s what a stock is.</span>
-        </p>
 
         <div>
           <p className="font-sans text-xs text-gray-500 mb-2 font-medium">
@@ -291,7 +283,11 @@ function Step1({
           </div>
         </div>
 
-        <PrimaryButton onClick={onNext} disabled={!ageGroup} className="!w-full !font-semibold !text-base">
+        <PrimaryButton
+          onClick={onNext}
+          disabled={!ageGroup}
+          className="!w-full !font-semibold !text-base"
+        >
           Let&rsquo;s go →
         </PrimaryButton>
       </div>
@@ -307,7 +303,9 @@ function Step1({
             <div className="w-7 h-7 rounded-full bg-brand-light flex items-center justify-center">
               {s.icon}
             </div>
-            <p className="font-heading text-3xl font-bold text-brand-dark leading-none">{s.value}</p>
+            <p className="font-heading text-3xl font-bold text-brand-dark leading-none">
+              {s.value}
+            </p>
             <p className="font-sans text-xs text-gray-500 leading-snug">{s.label}</p>
           </div>
         ))}
@@ -316,7 +314,7 @@ function Step1({
   );
 }
 
-// ─── Step 2 — Concept ─────────────────────────────────────────────────────────
+// ─── Step 2 — How to Buy ──────────────────────────────────────────────────────
 function Step2({
   content,
   onNext,
@@ -327,18 +325,18 @@ function Step2({
   const blocks: Array<{ icon: React.ReactNode; title: string; text: string }> =
     [
       {
-        icon: <PieChart className="w-4 h-4 text-brand-dark" />,
-        title: "The pizza slice idea",
+        icon: <Building2 className="w-4 h-4 text-brand-dark" />,
+        title: "What is a broker?",
         text: content.p1,
       },
       {
-        icon: <Smartphone className="w-4 h-4 text-brand-dark" />,
-        title: "Back to Apple",
+        icon: <ShoppingCart className="w-4 h-4 text-brand-dark" />,
+        title: "What does a buy order look like?",
         text: content.p2,
       },
       {
-        icon: <TrendingUp className="w-4 h-4 text-brand-dark" />,
-        title: "Why would Apple share ownership?",
+        icon: <SlidersHorizontal className="w-4 h-4 text-brand-dark" />,
+        title: "Market price vs limit price",
         text: content.p3,
       },
     ];
@@ -348,11 +346,15 @@ function Step2({
       {/* Left — heading, intro, button */}
       <div className="col-span-2 space-y-5 pt-1">
         <div>
-          <Label>The concept</Label>
-          <h2 className="font-heading text-4xl font-bold text-gray-900 mt-1">What is a stock?</h2>
-          <p className="font-sans text-lg text-gray-600 mt-2 leading-relaxed">{content.intro}</p>
+          <Label>The Concept</Label>
+          <h2 className="font-heading text-4xl font-bold text-gray-900 mt-1">
+            What do you need to buy a stock?
+          </h2>
+          <p className="font-sans text-lg text-gray-600 mt-2 leading-relaxed">
+            {content.intro}
+          </p>
         </div>
-        <PrimaryButton onClick={onNext}>Got it — show me the chart →</PrimaryButton>
+        <PrimaryButton onClick={onNext}>Show me the order screen →</PrimaryButton>
       </div>
 
       {/* Right — concept blocks */}
@@ -376,7 +378,7 @@ function Step2({
   );
 }
 
-// ─── Step 3 — Chart ───────────────────────────────────────────────────────────
+// ─── Step 3 — Order Screen ────────────────────────────────────────────────────
 function Step3({
   content,
   onNext,
@@ -384,41 +386,219 @@ function Step3({
   content: LessonContent;
   onNext: () => void;
 }) {
+  const [quantity, setQuantity] = useState(1);
+  const [orderType, setOrderType] = useState<"market" | "limit">("market");
+  const [ordered, setOrdered] = useState(false);
+  const orderConfettiRef = useRef(false);
+
+  const total = (quantity * STOCK_PRICE).toFixed(2);
+
+  function handleBuy() {
+    if (ordered) return;
+    setOrdered(true);
+    if (!orderConfettiRef.current) {
+      orderConfettiRef.current = true;
+      confetti({
+        particleCount: 70,
+        spread: 55,
+        colors: ["#3B6D11", "#639922", "#EAF3DE", "#a8d85a"],
+        origin: { y: 0.5 },
+      });
+    }
+  }
+
   return (
-    <div className="grid grid-cols-2 gap-12 items-center w-full max-w-5xl">
+    <div className="grid grid-cols-2 gap-12 items-start w-full max-w-5xl">
       {/* Left */}
-      <div className="space-y-5">
+      <div className="space-y-5 pt-1">
         <div>
           <Label>See it in action</Label>
           <h2 className="font-heading text-4xl font-bold text-gray-900 mt-1">
-            Apple&rsquo;s stock price over time
+            Place your first order
           </h2>
           <p className="font-sans text-base text-gray-500 mt-2 leading-relaxed">
-            When the price goes up, your slice is worth more.
+            This is what a real broker screen looks like. Try placing a buy order.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center hover:-translate-y-0.5 transition-transform duration-200">
-            <p className="font-sans text-xs text-gray-400 mb-1">If you bought in 2019</p>
-            <p className="font-heading text-3xl font-bold text-gray-700">$1,000</p>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center hover:-translate-y-0.5 transition-transform duration-200">
-            <p className="font-sans text-xs text-gray-400 mb-1">Value today (~6 yrs later)</p>
-            <p className="font-heading text-3xl font-bold text-brand-dark">~$5,200</p>
-          </div>
-        </div>
+        <AnimatePresence mode="wait">
+          {!ordered ? (
+            <motion.p
+              key="note-pre"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="font-sans text-sm text-gray-500 italic leading-relaxed bg-brand-light rounded-xl px-4 py-3"
+            >
+              {content.intro}
+            </motion.p>
+          ) : (
+            <motion.div
+              key="note-post"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="font-sans text-sm text-gray-600 leading-relaxed bg-brand-light rounded-xl px-4 py-3"
+            >
+              {content.orderNote}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <p className="font-sans text-sm text-gray-500 italic leading-relaxed">{content.chartNote}</p>
-
-        <PrimaryButton onClick={onNext}>I&rsquo;m ready for the quiz →</PrimaryButton>
+        <AnimatePresence>
+          {ordered && (
+            <motion.div
+              key="next-btn"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+            >
+              <PrimaryButton onClick={onNext} className="!w-full !font-semibold !text-base">
+                I get it — take the quiz →
+              </PrimaryButton>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Right — chart */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-md p-8 h-full flex items-center">
-        <div className="w-full">
-          <AaplChart />
+      {/* Right — broker card */}
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
+        {/* Card header */}
+        <div className="bg-brand-dark px-5 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-heading text-lg font-bold text-white leading-none">
+                AAPL
+              </p>
+              <p className="font-sans text-xs text-green-200 mt-0.5">Apple Inc.</p>
+            </div>
+            <div className="text-right">
+              <div className="flex items-center gap-1.5 justify-end">
+                <TrendingUp className="w-3.5 h-3.5 text-green-400" />
+                <span className="font-sans text-xs font-semibold text-green-400">
+                  +2.4% today
+                </span>
+              </div>
+              <p className="font-heading text-2xl font-bold text-white mt-0.5">
+                $213.50
+              </p>
+            </div>
+          </div>
         </div>
+
+        {/* Card body */}
+        <AnimatePresence mode="wait">
+          {!ordered ? (
+            <motion.div
+              key="order-form"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="p-5 space-y-4"
+            >
+              {/* Order type toggle */}
+              <div>
+                <p className="font-sans text-xs text-gray-400 font-medium mb-1.5">
+                  Order type
+                </p>
+                <div className="flex rounded-xl border border-gray-200 overflow-hidden">
+                  {(["market", "limit"] as const).map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setOrderType(type)}
+                      className={`flex-1 py-2.5 text-sm font-semibold font-sans transition-colors duration-200 cursor-pointer
+                        ${
+                          orderType === type
+                            ? "bg-brand-dark text-white"
+                            : "bg-white text-gray-500 hover:bg-brand-light"
+                        }`}
+                    >
+                      {type === "market" ? "Market Order" : "Limit Order"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quantity */}
+              <div>
+                <p className="font-sans text-xs text-gray-400 font-medium mb-1.5">
+                  Quantity (shares)
+                </p>
+                <input
+                  type="number"
+                  min={1}
+                  max={100}
+                  value={quantity}
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10);
+                    if (!isNaN(v) && v >= 1 && v <= 100) setQuantity(v);
+                  }}
+                  className="font-sans w-full border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800
+                             focus:outline-none focus:ring-2 focus:ring-brand-mid focus:border-transparent transition"
+                />
+              </div>
+
+              {/* Estimated total */}
+              <div className="flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
+                <p className="font-sans text-xs text-gray-500 font-medium">
+                  Estimated total
+                </p>
+                <p className="font-heading text-lg font-bold text-gray-800">
+                  ${total}
+                </p>
+              </div>
+
+              {/* Available balance */}
+              <div className="flex items-center justify-between px-1">
+                <p className="font-sans text-xs text-gray-400">
+                  Available balance
+                </p>
+                <p className="font-sans text-xs font-semibold text-gray-600">
+                  $1,000.00
+                </p>
+              </div>
+
+              {/* Buy button */}
+              <button
+                onClick={handleBuy}
+                className="font-sans w-full rounded-xl bg-green-600 text-white py-3.5 font-bold text-sm
+                           hover:bg-green-700 active:scale-[0.99] transition-all duration-150 cursor-pointer shadow-sm"
+              >
+                Buy AAPL
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="order-success"
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="p-5 flex flex-col items-center text-center gap-4 py-10"
+            >
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle className="w-9 h-9 text-green-600" />
+              </div>
+              <div>
+                <p className="font-heading text-2xl font-bold text-gray-900">
+                  Order placed!
+                </p>
+                <p className="font-sans text-sm text-gray-500 mt-1 leading-relaxed">
+                  You just bought{" "}
+                  <span className="font-bold text-brand-dark">
+                    {quantity} share{quantity !== 1 ? "s" : ""}
+                  </span>{" "}
+                  of Apple for{" "}
+                  <span className="font-bold text-brand-dark">${total}</span>
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 bg-green-50 rounded-full px-4 py-2">
+                <TrendingUp className="w-4 h-4 text-green-600" />
+                <span className="font-sans text-xs font-semibold text-green-700">
+                  You&rsquo;re now an Apple investor
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
@@ -478,13 +658,19 @@ function QuestionBlock({
       {answered !== null && (
         <div
           className={`font-sans inline-flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-full ${
-            isCorrect ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            isCorrect
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
           }`}
         >
+          {isCorrect ? (
+            <CheckCircle className="w-4 h-4 shrink-0" />
+          ) : (
+            <XCircle className="w-4 h-4 shrink-0" />
+          )}
           {isCorrect
-            ? <CheckCircle className="w-4 h-4 shrink-0" />
-            : <XCircle className="w-4 h-4 shrink-0" />}
-          {isCorrect ? content.quizFeedbackCorrect : content.quizFeedbackWrong}
+            ? content.quizFeedbackCorrect
+            : content.quizFeedbackWrong}
         </div>
       )}
     </div>
@@ -520,9 +706,14 @@ function Step4({
         </div>
       </div>
 
-      {/* Right — Q1 always visible, Q2 slides in horizontally */}
+      {/* Right — Q1 always visible, Q2 slides in */}
       <div className="flex-1 grid grid-cols-2 gap-6">
-        <QuestionBlock questionIndex={0} answers={answers} content={content} onAnswer={onAnswer} />
+        <QuestionBlock
+          questionIndex={0}
+          answers={answers}
+          content={content}
+          onAnswer={onAnswer}
+        />
 
         <AnimatePresence>
           {q1Answered && (
@@ -532,7 +723,12 @@ function Step4({
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.35, ease: "easeOut" }}
             >
-              <QuestionBlock questionIndex={1} answers={answers} content={content} onAnswer={onAnswer} />
+              <QuestionBlock
+                questionIndex={1}
+                answers={answers}
+                content={content}
+                onAnswer={onAnswer}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -554,7 +750,7 @@ function Step5({
 }) {
   return (
     <div className="w-full max-w-md flex flex-col items-center text-center space-y-7">
-      {/* Badge with Framer Motion pulse ring */}
+      {/* Badge with pulse ring */}
       <div className="relative flex items-center justify-center">
         <motion.div
           className="absolute rounded-full border-4 border-brand-mid"
@@ -563,15 +759,17 @@ function Step5({
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         />
         <div className="w-32 h-32 rounded-full bg-brand-dark flex items-center justify-center z-10 shadow-md">
-          <Star className="text-white w-12 h-12" fill="white" />
+          <ShoppingCart className="text-white w-12 h-12" />
         </div>
       </div>
 
       {/* Title */}
       <div className="space-y-1">
-        <h2 className="font-heading text-4xl font-bold text-gray-900">Stock Explorer</h2>
+        <h2 className="font-heading text-4xl font-bold text-gray-900">
+          First Buyer
+        </h2>
         <p className="font-sans text-sm text-gray-500">
-          You completed Lesson 1 — What is a stock?
+          You completed Lesson 2 — How to buy a stock
         </p>
       </div>
 
@@ -602,18 +800,23 @@ function Step5({
           <div
             key={i}
             className={`flex items-start gap-3 transition-all duration-300 ${
-              checksVisible[i] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+              checksVisible[i]
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-2"
             }`}
           >
             <CheckCircle2 className="text-brand-dark w-5 h-5 shrink-0 mt-0.5" />
-            <span className="font-sans text-sm text-gray-700 leading-snug">{point}</span>
+            <span className="font-sans text-sm text-gray-700 leading-snug">
+              {point}
+            </span>
           </div>
         ))}
       </div>
 
+      {/* Actions */}
       <div className="flex gap-3 w-full">
         <Link
-          href="/lesson/2"
+          href="/lesson/3"
           className="font-sans flex-1 text-center rounded-full bg-brand-dark text-white px-6 py-3 font-bold text-sm
                      hover:scale-[1.02] active:scale-[0.98] transition-transform duration-150 shadow-sm"
         >
@@ -633,7 +836,7 @@ function Step5({
 }
 
 // ─── Main page ────────────────────────────────────────────────────────────────
-export default function LessonPage() {
+export default function Lesson2Page() {
   const [step, setStep] = useState<Step>(1);
   const [ageGroup, setAgeGroup] = useState<AgeGroup | null>(null);
   const [answers, setAnswers] = useState<(number | null)[]>([null, null]);
@@ -656,7 +859,6 @@ export default function LessonPage() {
     const target = score;
     const duration = 900;
 
-    // XP counter starts after 300ms
     const xpTimer = setTimeout(() => {
       const start = performance.now();
       const tick = (now: number) => {
@@ -679,7 +881,6 @@ export default function LessonPage() {
       }, 500 + i * 200);
     });
 
-    // Confetti burst — green palette only
     const confettiTimer = setTimeout(() => {
       confetti({
         particleCount: 90,
@@ -705,7 +906,7 @@ export default function LessonPage() {
     if (isCorrect) setScore((prev) => prev + 50);
   }
 
-  function restartDemo() {
+  function restartLesson() {
     setStep(1);
     setAgeGroup(null);
     setAnswers([null, null]);
@@ -718,7 +919,6 @@ export default function LessonPage() {
     <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
       <TopBar step={step} />
 
-      {/* Content area — vertically + horizontally centered */}
       <main className="flex-1 flex items-center justify-center px-8 py-12 overflow-hidden">
         <div key={step} className="animate-fade-up w-full flex justify-center">
           {step === 1 && (
@@ -747,7 +947,7 @@ export default function LessonPage() {
               score={score}
               xpDisplay={xpDisplay}
               checksVisible={checksVisible}
-              onRestart={restartDemo}
+              onRestart={restartLesson}
             />
           )}
         </div>

@@ -37,7 +37,9 @@
       "Bash(git -C /c/Users/Shayan/Desktop/lesson_prototype log --oneline -10)",
       "mcp__playwright__browser_resize",
       "mcp__playwright__browser_evaluate",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
