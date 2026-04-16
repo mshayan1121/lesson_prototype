@@ -4,6 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 @AGENTS.md
 
+## Standing Instructions
+
+- **Always make responsive**: Every UI change must work across mobile, tablet, and desktop. Use Tailwind responsive prefixes (`sm:`, `md:`, `lg:`) on all layout, spacing, and typography. Test all breakpoints.
+- **Always use the ui-ux-pro-max skill**: For any UI/UX work, invoke the `ui-ux-pro-max` skill before implementing.
+- **Push code without screenshots**: When pushing or committing code, do not take or attach screenshots. Just commit and push directly.
+
 ## Commands
 
 ```bash

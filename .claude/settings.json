@@ -48,7 +48,12 @@
       "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"animation accessibility stagger\" --domain ux)",
       "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"nextjs dashboard routing layout\" --stack nextjs)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/dashboard)",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "mcp__playwright__browser_hover",
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"gamified fintech education dashboard youth sidebar navigation\" --design-system -p \"Trading Academy\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"gamified fintech education dashboard youth sidebar navigation\" --design-system -p \"Trading Academy\")",
+      "mcp__playwright__browser_close",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"admin dashboard fintech education gamified SaaS\" --design-system -p \"Trading Academy Admin\")"
     ]
   }
 }
