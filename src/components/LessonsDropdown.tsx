@@ -9,6 +9,7 @@ import {
   CheckCircle,
   PlayCircle,
   Lock,
+  LineChart,
 } from "lucide-react";
 
 type LessonStatus = "completed" | "current" | "locked";
@@ -186,6 +187,30 @@ export function LessonsDropdown() {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Simulator link */}
+              <div className="mt-3 border-t border-gray-100 pt-3">
+                <div
+                  onClick={() => {
+                    router.push("/dashboard/simulator");
+                    setOpen(false);
+                  }}
+                  className={[
+                    "flex items-center gap-3 rounded-xl p-3 transition-all cursor-pointer",
+                    pathname === "/dashboard/simulator"
+                      ? "bg-green-50 border border-green-100"
+                      : "border border-transparent hover:bg-gray-50",
+                  ].join(" ")}
+                >
+                  <LineChart className="w-4 h-4 text-green-500 shrink-0" />
+                  <span className="text-sm font-semibold font-heading flex-1 leading-snug text-gray-800">
+                    Simulator
+                  </span>
+                  <span className="font-sans bg-emerald-100 text-emerald-700 text-xs font-medium px-2 py-0.5 rounded-full">
+                    New
+                  </span>
+                </div>
               </div>
             </div>
           </motion.div>

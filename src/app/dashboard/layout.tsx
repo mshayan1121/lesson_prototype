@@ -24,12 +24,11 @@ import { cn } from '@/lib/utils'
 const NAV = [
   { label: 'Home',         icon: LayoutDashboard, href: '/dashboard' },
   { label: 'My Modules',   icon: BookOpen,         href: '/dashboard/modules' },
+  { label: 'Simulator',    icon: CandlestickChart, href: '/dashboard/simulator' },
   { label: 'Leaderboard',  icon: Trophy,           href: '/dashboard/leaderboard' },
   { label: 'Achievements', icon: Medal,            href: '/dashboard/achievements' },
 ]
 
-const SIDEBAR_EXPANDED = 268
-const SIDEBAR_COLLAPSED = 60
 
 function isActive(href: string, pathname: string) {
   if (href === '/dashboard') return pathname === '/dashboard'
@@ -123,8 +122,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter()
   const xpPct = (STUDENT.xp / STUDENT.xpToNextLevel) * 100
   const [collapsed, setCollapsed] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+
+  useEffect(() => {
+    setCollapsed(localStorage.getItem('sidebar-collapsed') === 'true')
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted) localStorage.setItem('sidebar-collapsed', String(collapsed))
+  }, [collapsed, mounted])
 
   const profileRef = useRef<HTMLDivElement>(null)
   const settingsRef = useRef<HTMLDivElement>(null)
@@ -134,14 +143,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f7f2] flex">
+    <div
+      className="min-h-screen bg-[#f4f7f2] flex group/root"
+      data-collapsed={String(collapsed)}
+      suppressHydrationWarning
+    >
 
       {/* ─── Sidebar — desktop only ───────────────────────────────── */}
-      <motion.aside
-        animate={{ width: collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED }}
-        transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-        className="hidden md:flex flex-col fixed left-0 top-0 bottom-0 bg-white border-r border-gray-100 z-30 overflow-visible"
-      >
+      <aside className={cn(
+        'hidden md:flex flex-col fixed left-0 top-0 bottom-0 bg-white border-r border-gray-100 z-30 overflow-visible',
+        'w-[268px] group-data-[collapsed=true]/root:w-[60px]',
+        mounted ? 'transition-[width] duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]' : ''
+      )}>
 
         {/* ── Logo ──────────────────────────────────────────────────── */}
         <div className={cn(
@@ -415,18 +428,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
         </div>
-      </motion.aside>
+      </aside>
 
       {/* ─── Main content — desktop ───────────────────────────────── */}
-      <motion.div
-        animate={{ marginLeft: collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED }}
-        transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-        className="flex-1 min-h-screen hidden md:block"
-      >
+      <div className={cn(
+        'flex-1 min-h-screen hidden md:block',
+        'ml-[268px] group-data-[collapsed=true]/root:ml-[60px]',
+        mounted ? 'transition-[margin] duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)]' : ''
+      )}>
         <main className="p-6">
           {children}
         </main>
-      </motion.div>
+      </div>
 
       {/* ─── Mobile layout ────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col md:hidden min-h-screen">
