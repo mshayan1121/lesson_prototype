@@ -127,8 +127,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
-    setCollapsed(localStorage.getItem('sidebar-collapsed') === 'true')
-    setMounted(true)
+    const saved = localStorage.getItem('sidebar-collapsed') === 'true'
+    setCollapsed(saved)
+    // Enable transitions only after the sidebar has snapped to the saved position
+    requestAnimationFrame(() => requestAnimationFrame(() => setMounted(true)))
   }, [])
 
   useEffect(() => {
